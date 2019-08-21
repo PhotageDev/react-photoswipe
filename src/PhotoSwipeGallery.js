@@ -18,14 +18,11 @@ class PhotoSwipeGallery extends React.Component {
 
   static defaultProps = {
     options: {},
-    thumbnailContent: item => (
-      <img src={item.src} width="100" height="100" alt=""/>
-    ),
+    thumbnailContent: item => <img src={item.src} width="100" height="100" alt="" />,
     id: '',
     className: '',
     isOpen: false,
-    onClose: () => {
-    }
+    onClose: () => {}
   };
 
   state = {
@@ -33,7 +30,7 @@ class PhotoSwipeGallery extends React.Component {
     options: this.props.options
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = nextProps => {
     const { isOpen } = this.state;
     if (nextProps.isOpen) {
       if (!isOpen) {
@@ -44,15 +41,15 @@ class PhotoSwipeGallery extends React.Component {
     }
   };
 
-  showPhotoSwipe = itemIndex => (e) => {
+  showPhotoSwipe = itemIndex => e => {
     e.preventDefault();
-    const getThumbBoundsFn = ((index) => {
+    const getThumbBoundsFn = index => {
       const thumbnail = this.thumbnails[index];
       const img = thumbnail.getElementsByTagName('img')[0];
       const pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
       const rect = img.getBoundingClientRect();
       return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
-    });
+    };
     const { options } = this.state;
     options.index = itemIndex;
     options.getThumbBoundsFn = options.getThumbBoundsFn || getThumbBoundsFn;
@@ -81,24 +78,17 @@ class PhotoSwipeGallery extends React.Component {
           {items.map((item, index) => (
             <div
               key={index}
-              ref={(node) => {
+              ref={node => {
                 this.thumbnails = this.thumbnails || [];
                 this.thumbnails[index] = node;
               }}
               className="pswp-thumbnail"
-              onClick={this.showPhotoSwipe(index)}
-            >
+              onClick={this.showPhotoSwipe(index)}>
               {thumbnailContent(item)}
             </div>
           ))}
         </div>
-        <PhotoSwipe
-          {...eventProps}
-          isOpen={isOpen}
-          items={items}
-          options={options}
-          onClose={this.handleClose}
-        />
+        <PhotoSwipe {...eventProps} isOpen={isOpen} items={items} options={options} onClose={this.handleClose} />
       </div>
     );
   }
